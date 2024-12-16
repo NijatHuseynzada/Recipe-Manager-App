@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.home-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #333;
+}
+
+.featured-recipe {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-card {
+  background-color: #e2e2e2;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.projects ul {
+  list-style: none;
+  padding: 0;
+}
+
+.projects li {
+  margin: 10px 0;
+}
+
+.projects a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.projects a:hover {
+  text-decoration: underline;
+}
