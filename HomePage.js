@@ -1,36 +1,24 @@
-import React from 'react';
-import FeaturedRecipe from '../components/FeaturedRecipe';
-
 const HomePage = () => {
   return (
-    <div className="home-page">
+    <div className="container">
       <h1>Welcome to the Recipe Manager App</h1>
-      <p>This app allows you to create, view, edit, and organize your favorite recipes.</p>
+      <p>This app helps you manage your favorite recipes efficiently.</p>
+      
+      <section>
+        <h2>Featured Recipe</h2>
+        <div className="recipe-card">
+          <h3>Spaghetti Bolognese</h3>
+          <p>A classic Italian pasta dish with a rich meat sauce.</p>
+        </div>
+      </section>
 
-      <FeaturedRecipe />
-
-      <div className="projects">
-        <h2>My Web and Mobile 1 Course Projects</h2>
+      <section>
+        <h2>My Projects</h2>
         <ul>
-          <li>
-            <a href="https://github.com/yourusername/project1" target="_blank" rel="noopener noreferrer">
-              Project 1: Recipe Manager App (GitHub Repository)
-            </a>
-          </li>
-          <li>
-            <a href="https://yourproject1.github.io" target="_blank" rel="noopener noreferrer">
-              Project 2: Web Portfolio (GitHub Pages)
-            </a>
-          </li>
-          <li>
-            <a href="https://youtube.com/your-video" target="_blank" rel="noopener noreferrer">
-              Project 3: Mobile App Demo (YouTube)
-            </a>
-          </li>
+          <li><a href="https://github.com/your-username/project1">Project 1</a></li>
+          <li><a href="https://github.com/your-username/project2">Project 2</a></li>
         </ul>
-      </div>
+      </section>
     </div>
   );
 };
-
-export default HomePage;
