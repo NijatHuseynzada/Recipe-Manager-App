@@ -1,3 +1,5 @@
+import React from 'react';
+
 const HomePage = () => {
   return (
     <div className="container">
@@ -22,3 +24,5 @@ const HomePage = () => {
     </div>
   );
 };
+
+export default HomePage;
