@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-dom';
-import HomePage from './Homepage.jsx';
+import HomePage from './HomePage.jsx';
 import RecipeList from './RecipeList.jsx';
 import RecipeForm from './RecipeForm.jsx';
 import ContactPage from './ContactPage.jsx';
@@ -29,6 +29,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/add-recipe" element={<RecipeForm />} />
+        <Route path="/edit-recipe/:id" element={<RecipeForm />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
     </Router>
