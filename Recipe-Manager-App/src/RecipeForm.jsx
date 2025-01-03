@@ -37,6 +37,7 @@ const RecipeForm = () => {
       ingredients: form.ingredients.split(',').map((item) => item.trim()),
       steps: form.steps.split(',').map((item) => item.trim()),
       tags: form.tags.split(',').map((item) => item.trim()),
+      last_updated: new Date().toISOString(), // Add last updated date/time
     };
 
     try {
@@ -127,15 +128,15 @@ const RecipeForm = () => {
           </select>
         </div>
         <div className="form-group">
-  <label htmlFor="image">Image URL</label>
-  <input
-    type="text"
-    id="image"
-    placeholder="Enter image URL (e.g., /images/recipe.jpg)"
-    value={form.image || ''}
-    onChange={(e) => setForm({ ...form, image: e.target.value })}
-  />
-</div>
+          <label htmlFor="image">Image URL</label>
+          <input
+            type="text"
+            id="image"
+            placeholder="Enter image URL (e.g., /images/recipe.jpg)"
+            value={form.image || ''}
+            onChange={(e) => setForm({ ...form, image: e.target.value })}
+          />
+        </div>
 
         <button type="submit" className="btn-submit">Save Recipe</button>
       </form>

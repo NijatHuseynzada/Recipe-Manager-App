@@ -1,7 +1,7 @@
 {
   "recipes": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Spaghetti Bolognese",
       "description": "A classic Italian pasta dish with a rich meat sauce.",
       "ingredients": [
@@ -16,7 +16,9 @@
         "Boil water and cook spaghetti until al dente.",
         "Sauté onions and garlic in olive oil until translucent.",
         "Add ground beef and cook until browned.",
-        "Pour in tomato sauce, add salt and pepper, and simmer for 20 minutes.",
+        "Pour in tomato sauce",
+        "add salt and pepper",
+        "and simmer for 20 minutes.",
         "Serve sauce over spaghetti with grated Parmesan cheese."
       ],
       "tags": [
@@ -25,11 +27,11 @@
         "Easy"
       ],
       "difficulty": "Medium",
-      "last_updated": "2024-12-16",
-      "image": "/images/spaghetti-bolognese.jpg"
+      "last_updated": "2025-01-03T17:11:45.221Z",
+      "image": "https://images.ctfassets.net/uexfe9h31g3m/6QtnhruEFi8qgEyYAICkyS/ab01e9b1da656f35dd1a721c810162a0/Spaghetti_bolognese_4x3_V2_LOW_RES.jpg?w=2000&h=1500&fm=webp&fit=thumb&q=100"
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Chicken Tikka Masala",
       "description": "A creamy and spicy Indian chicken curry.",
       "ingredients": [
@@ -42,7 +44,9 @@
       ],
       "steps": [
         "Marinate chicken in yogurt and spices for 2 hours.",
-        "Cook onions, garlic, and ginger until golden brown.",
+        "Cook onions",
+        "garlic",
+        "and ginger until golden brown.",
         "Add tomato puree and simmer for 10 minutes.",
         "Add chicken pieces and cook until tender.",
         "Stir in cream and garnish with fresh coriander."
@@ -53,11 +57,11 @@
         "Spicy"
       ],
       "difficulty": "Medium",
-      "last_updated": "2024-12-15",
-      "image": "/images/chicken.JPG"
+      "last_updated": "2025-01-03T17:12:19.250Z",
+      "image": "https://www.seriouseats.com/thmb/DbQHUK2yNCALBnZE-H1M2AKLkok=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/chicken-tikka-masala-for-the-grill-recipe-hero-2_1-cb493f49e30140efbffec162d5f2d1d7.JPG"
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Vegetable Stir Fry",
       "description": "A quick and healthy mix of stir-fried vegetables.",
       "ingredients": [
@@ -81,11 +85,11 @@
         "Healthy"
       ],
       "difficulty": "Easy",
-      "last_updated": "2024-12-14",
-      "image": "/images/vegetable.jpg"
+      "last_updated": "2025-01-03T17:13:00.134Z",
+      "image": "https://images.immediate.co.uk/production/volatile/sites/2/2020/04/Sunblush-tomato-paellla-dcf247c-scaled.jpg?quality=90&resize=700,466"
     },
     {
-      "id": 4,
+      "id": "4",
       "title": "Pancakes",
       "description": "Fluffy breakfast pancakes that everyone will love.",
       "ingredients": [
@@ -97,11 +101,16 @@
         "Butter"
       ],
       "steps": [
-        "Mix flour, baking powder, and sugar in a bowl.",
+        "Mix flour",
+        "baking powder",
+        "and sugar in a bowl.",
         "Whisk in milk and eggs until smooth.",
         "Heat butter in a pan and pour batter to form pancakes.",
-        "Cook until bubbles appear, then flip and cook the other side.",
-        "Serve with syrup, berries, or whipped cream."
+        "Cook until bubbles appear",
+        "then flip and cook the other side.",
+        "Serve with syrup",
+        "berries",
+        "or whipped cream."
       ],
       "tags": [
         "Breakfast",
@@ -109,11 +118,11 @@
         "Quick"
       ],
       "difficulty": "Easy",
-      "last_updated": "2024-12-13",
-      "image": "/images/pancakes.jpg"
+      "last_updated": "2025-01-03T17:17:12.402Z",
+      "image": "https://www.allrecipes.com/thmb/FE0PiuuR0Uh06uVh1c2AsKjRGbc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/21014-Good-old-Fashioned-Pancakes-mfs_002-0e249c95678f446291ebc9408ae64c05.jpg"
     },
     {
-      "id": 5,
+      "id": "5",
       "title": "Beef Stroganoff",
       "description": "A creamy Russian dish with beef and mushrooms.",
       "ingredients": [
@@ -128,7 +137,8 @@
         "Slice beef into thin strips.",
         "Sauté onions and mushrooms in butter until soft.",
         "Add beef and cook until browned.",
-        "Stir in flour, then add sour cream and simmer for 10 minutes.",
+        "Stir in flour",
+        "then add sour cream and simmer for 10 minutes.",
         "Serve over noodles or rice."
       ],
       "tags": [
@@ -137,11 +147,11 @@
         "Russian"
       ],
       "difficulty": "Medium",
-      "last_updated": "2024-12-12",
-      "image": "/images/beef-stroganoff.jpeg"
+      "last_updated": "2025-01-03T17:16:48.052Z",
+      "image": "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2FPhoto%2FRecipes%2F2024-03-beef-stroganoff-190%2Fbeef-stroganoff-190-342_1"
     },
     {
-      "id": 6,
+      "id": "6",
       "title": "Chicken Alfredo",
       "description": "Creamy pasta with chicken in a white sauce.",
       "ingredients": [
@@ -155,7 +165,8 @@
       "steps": [
         "Cook pasta according to package instructions.",
         "Sauté chicken pieces in butter until cooked through.",
-        "Add garlic and cream, and simmer for 5 minutes.",
+        "Add garlic and cream",
+        "and simmer for 5 minutes.",
         "Mix in Parmesan cheese until melted.",
         "Toss sauce with pasta and serve hot."
       ],
@@ -165,11 +176,11 @@
         "Creamy"
       ],
       "difficulty": "Easy",
-      "last_updated": "2024-12-11",
-      "image": "/images/chicken-alfredo-1-2.jpg"
+      "last_updated": "2025-01-03T17:15:17.885Z",
+      "image": "https://midwestfoodieblog.com/wp-content/uploads/2023/07/chicken-alfredo-1-2.jpg"
     },
     {
-      "id": 7,
+      "id": "7",
       "title": "Lentil Soup",
       "description": "A hearty and nutritious soup with lentils and vegetables.",
       "ingredients": [
@@ -181,10 +192,16 @@
         "Vegetable Stock"
       ],
       "steps": [
-        "Sauté onions, garlic, carrots, and celery in a pot.",
+        "Sauté onions",
+        "garlic",
+        "carrots",
+        "and celery in a pot.",
         "Add lentils and vegetable stock.",
-        "Bring to a boil, then reduce heat and simmer until lentils are soft.",
-        "Season with salt, pepper, and herbs.",
+        "Bring to a boil",
+        "then reduce heat and simmer until lentils are soft.",
+        "Season with salt",
+        "pepper",
+        "and herbs.",
         "Serve with crusty bread."
       ],
       "tags": [
@@ -193,35 +210,11 @@
         "Vegan"
       ],
       "difficulty": "Easy",
-      "last_updated": "2024-12-10",
-      "image": "/images/Lebanese-Lentil-Soup-square.jpg"
+      "last_updated": "2025-01-03T17:15:56.368Z",
+      "image": "https://cdn.apartmenttherapy.info/image/upload/f_jpg,q_auto:eco,c_fill,g_auto,w_1500,ar_1:1/k%2FPhoto%2FRecipes%2F2024-10-red-lentil-soup%2Fred-lentil-soup-180"
     },
     {
-      "id": 8,
-      "title": "Grilled Cheese Sandwich",
-      "description": "A quick and cheesy sandwich for any time of the day.",
-      "ingredients": [
-        "Bread",
-        "Cheese",
-        "Butter"
-      ],
-      "steps": [
-        "Butter one side of each bread slice.",
-        "Place cheese between two slices, buttered sides out.",
-        "Grill in a hot pan until golden brown on both sides.",
-        "Slice and serve warm."
-      ],
-      "tags": [
-        "Quick",
-        "Comfort Food",
-        "Snack"
-      ],
-      "difficulty": "Easy",
-      "last_updated": "2024-12-09",
-      "image": "/images/grilled-cheese.jpg"
-    },
-    {
-      "id": 9,
+      "id": "9",
       "title": "Caesar Salad",
       "description": "A fresh salad with crispy croutons and Caesar dressing.",
       "ingredients": [
@@ -242,11 +235,11 @@
         "Quick"
       ],
       "difficulty": "Easy",
-      "last_updated": "2024-12-08",
-      "image": "/images/Avocado-Caesar-Salad-FI.jpg"
+      "last_updated": "2025-01-03T17:14:40.801Z",
+      "image": "https://itsavegworldafterall.com/wp-content/uploads/2023/04/Avocado-Caesar-Salad-FI.jpg"
     },
     {
-      "id": 10,
+      "id": "10",
       "title": "Chocolate Brownies",
       "description": "Rich and fudgy chocolate brownies.",
       "ingredients": [
@@ -269,27 +262,43 @@
         "Baking"
       ],
       "difficulty": "Medium",
-      "last_updated": "2024-12-07",
-      "image": "/images/Easy-Fudgy.jpg"
+      "last_updated": "2025-01-03T17:14:02.200Z",
+      "image": "https://tutti-dolci.com/wp-content/uploads/2024/04/Triple-Chocolate-Brownies-3.jpg"
     },
     {
-      "id": "8bd9",
-      "title": "San Sebastian",
-      "description": "Creamy cheesecake",
+      "id": "673f",
+      "title": "İskender Kebab",
+      "description": "A beloved dish from Turkish cuisine, İskender Kebab combines layers of tender meat, buttery tomato sauce, and yogurt, served over pita bread.",
       "ingredients": [
-        "Sugar",
-        "Milk",
-        "Cream cheese",
-        "flour"
+        "Ingredients:  For the Meat:  1.5 pounds of lamb or beef (thinly sliced or ground) 2 tablespoons of olive oil 1 teaspoon of salt 1 teaspoon of black pepper 1 teaspoon of paprika 1/2 teaspoon of cumin For the Tomato Sauce:  2 cups of ripe tomatoes (pureed or canned) 2 tablespoons of tomato paste 2 tablespoons of butter 1 teaspoon of sugar Salt to taste For the Yogurt Mixture:  1.5 cups of thick",
+        "plain Turkish yogurt (strained if needed) 1 clove of garlic (minced",
+        "optional) For the Base:  2 pieces of Turkish pide bread (or any flatbread",
+        "cubed) 2 tablespoons of butter (melted) For the Finishing:  2 tablespoons of melted butter (infused with paprika or chili powder for garnish) Fresh parsley (optional",
+        "for garnish)"
       ],
       "steps": [
-        "First add ingredients then mix them"
+        "Prepare the Meat: If using sliced meat",
+        "marinate it in olive oil",
+        "salt",
+        "black pepper",
+        "paprika",
+        "and cumin for at least 1 hour. If using ground meat",
+        "mix the spices into the meat",
+        "shape it into flat patties",
+        "and refrigerate. Cook the Meat: Heat a large skillet or grill pan over medium-high heat. Cook the marinated meat slices or patties until browned and cooked through. Keep warm. Make the Tomato Sauce: In a saucepan",
+        "melt the butter over medium heat. Add the tomato paste and cook for 1 minute. Stir in the pureed tomatoes",
+        "sugar",
+        "and salt. Simmer for 10-15 minutes until thickened. Prepare the Yogurt Mixture: Whisk the yogurt with the minced garlic (optional) until smooth. Set aside. Toast the Bread: Cube the flatbread into bite-sized pieces. Toss with melted butter and toast in the oven or a pan until golden and crispy. Assemble the Dish: On a large serving platter",
+        "spread the toasted bread cubes as the base. Spoon the hot tomato sauce over the bread to soak it. Arrange the cooked meat slices or patties on top. Add Yogurt and Butter: Drizzle the yogurt mixture over the meat. Pour melted butter infused with paprika or chili powder over the dish. Serve: Garnish with fresh parsley if desired. Serve immediately",
+        "while everything is hot and flavorful."
       ],
       "tags": [
-        "dessert"
+        "Turkish",
+        "Spicy"
       ],
-      "difficulty": "Medium",
-      "image": "https://emmaduckworthbakes.com/wp-content/uploads/2023/06/Burnt-Basque-Cheesecake.jpg"
+      "difficulty": "Hard",
+      "image": "https://i0.wp.com/iran-cuisine.com/wp-content/uploads/2023/09/iskender-kebap-tarifi.jpg?fit=971%2C707&ssl=1",
+      "last_updated": "2025-01-03T19:25:15.477Z"
     }
   ]
 }
