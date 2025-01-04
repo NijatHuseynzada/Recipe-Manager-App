@@ -9,7 +9,7 @@ const HomePage = () => {
       try {
         const response = await fetchRecipes();
         if (response.data.length > 0) {
-          setFeaturedRecipe(response.data[response.data.length - 1]); // Show the newest recipe
+          setFeaturedRecipe(response.data[response.data.length - 1]); // Shows the newest recipe
         }
       } catch (error) {
         console.error('Error fetching featured recipe:', error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRecipesPaginated, deleteRecipe } from '../api';
+import { fetchRecipesPaginated, deleteRecipe, updateRecipesOrder } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
@@ -13,18 +14,17 @@ const RecipeList = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [filterActive, setFilterActive] = useState(false); // NEW: Track active filters
-  const [selectedRecipes, setSelectedRecipes] = useState([]); // NEW: Track selected recipes
+  const [filterActive, setFilterActive] = useState(false); 
+  const [selectedRecipes, setSelectedRecipes] = useState([]); 
 
   const navigate = useNavigate();
 
-  // Fetch recipes based on pagination or filter state
+ 
   useEffect(() => {
     const loadRecipes = async () => {
       try {
         setLoading(true);
 
-        // Fetch filtered recipes when filters/search are active
         if (filterActive) {
           const filteredData = applyFiltersAndSort(allRecipes);
           setRecipes(filteredData);
@@ -32,7 +32,6 @@ const RecipeList = () => {
           return;
         }
 
-        // Fetch paginated recipes when no filters/search are applied
         const response = await fetchRecipesPaginated(page, 25);
         const uniqueRecipes = response.filter(
           (newRecipe) => !allRecipes.some((recipe) => recipe.id === newRecipe.id)
@@ -52,33 +51,36 @@ const RecipeList = () => {
     };
 
     loadRecipes();
-  }, [page, filterActive]); // Trigger fetch when page changes or filters are applied
+  }, [page, filterActive]); 
 
-  // Apply filters and sorting whenever filters or sorting options change
   useEffect(() => {
     if (searchQuery || selectedTag || selectedDifficulty || sortOption) {
-      setFilterActive(true); // Filters are active
+      setFilterActive(true); 
       setRecipes(applyFiltersAndSort(allRecipes));
     } else {
-      setFilterActive(false); // Reset filters
-      setPage(1); // Reset pagination
-      setRecipes(allRecipes.slice(0, 10)); // Reset to the first page of recipes
+      setFilterActive(false); 
+      setPage(1); 
+      setRecipes(allRecipes.slice(0, 10)); 
     }
   }, [searchQuery, selectedTag, selectedDifficulty, sortOption]);
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this recipe?');
     if (!confirmDelete) return;
-
+  
     try {
       await deleteRecipe(id);
+  
       setAllRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
+      setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
+      
       alert('Recipe deleted successfully!');
     } catch (error) {
       console.error('Error deleting recipe:', error);
       alert('Failed to delete the recipe. Please try again.');
     }
   };
+  
 
   const handleEdit = (id) => {
     navigate(`/edit-recipe/${id}`);
@@ -87,7 +89,6 @@ const RecipeList = () => {
   const applyFiltersAndSort = (data) => {
     let filteredRecipes = data;
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filteredRecipes = filteredRecipes.filter(
@@ -98,17 +99,15 @@ const RecipeList = () => {
       );
     }
 
-    // Apply tag filter
     if (selectedTag) {
       filteredRecipes = filteredRecipes.filter((recipe) => recipe.tags?.includes(selectedTag));
     }
 
-    // Apply difficulty filter
     if (selectedDifficulty) {
       filteredRecipes = filteredRecipes.filter((recipe) => recipe.difficulty === selectedDifficulty);
     }
 
-    // Apply sorting
+
     if (sortOption) {
       filteredRecipes.sort((a, b) => {
         switch (sortOption) {
@@ -132,6 +131,36 @@ const RecipeList = () => {
 
     return uniqueRecipes;
   };
+
+  const handleDragEnd = async (result) => {
+  if (!result.destination) return;
+
+  // Reorder the recipes locally
+  const reorderedRecipes = Array.from(recipes);
+  const [removed] = reorderedRecipes.splice(result.source.index, 1);
+  reorderedRecipes.splice(result.destination.index, 0, removed);
+
+  // Update the order field
+  const updatedRecipes = reorderedRecipes.map((recipe, index) => ({
+    ...recipe,
+    order: index,
+  }));
+
+  setRecipes(updatedRecipes); // Update local state immediately
+
+  // Persist the updated order to the backend
+  try {
+    await updateRecipesOrder(updatedRecipes); // API call to persist order
+    setAllRecipes(updatedRecipes); // Update the full recipe list
+    alert('Order updated successfully!');
+  } catch (error) {
+    console.error('Failed to update order:', error);
+    alert('Failed to update order. Please try again.');
+  }
+};
+
+  
+  
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleTagChange = (e) => setSelectedTag(e.target.value);
@@ -225,69 +254,90 @@ const RecipeList = () => {
         Send Selected Recipes via Email
       </button>
 
-      <div className="recipe-grid">
-        {recipes.map((recipe) => (
-          <div key={recipe.id} className="recipe-card">
-            <input
-              type="checkbox"
-              checked={selectedRecipes.includes(recipe.id)}
-              onChange={() => handleSelectRecipe(recipe.id)}
-            />
-            <img
-              src={recipe.image}
-              alt={recipe.title}
-              className="recipe-image"
-              onClick={() => toggleExpanded(recipe.id)}
-            />
-            <div className="recipe-content">
-              <h3>{recipe.title}</h3>
-              <p>{recipe.description}</p>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="recipeList">
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="recipe-grid"
+            >
+              {recipes.map((recipe, index) => (
+                <Draggable key={recipe.id} draggableId={String(recipe.id)} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className="recipe-card"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedRecipes.includes(recipe.id)}
+                        onChange={() => handleSelectRecipe(recipe.id)}
+                      />
+                      <img
+                        src={recipe.image}
+                        alt={recipe.title}
+                        className="recipe-image"
+                        onClick={() => toggleExpanded(recipe.id)}
+                      />
+                      <div className="recipe-content">
+                        <h3>{recipe.title}</h3>
+                        <p>{recipe.description}</p>
 
-              <div className="recipe-meta">
-                <p className="recipe-difficulty">Difficulty: {recipe.difficulty}</p>
-                <div className="recipe-tags">
-                  {recipe.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                        <div className="recipe-meta">
+                          <p className="recipe-difficulty">Difficulty: {recipe.difficulty}</p>
+                          <div className="recipe-tags">
+                            {recipe.tags.map((tag, tagIndex) => (
+                              <span key={tagIndex} className="tag">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
 
-              <p className="recipe-updated">
-                Last updated: {new Date(recipe.last_updated).toLocaleString()}
-              </p>
+                        <p className="recipe-updated">
+                          Last updated: {new Date(recipe.last_updated).toLocaleString()}
+                        </p>
+                      </div>
+
+                      {expandedRecipe === recipe.id && (
+                        <div className="recipe-details">
+                          <h4>Ingredients</h4>
+                          <ul>
+                            {recipe.ingredients.map((ingredient, index) => (
+                              <li key={index}>{ingredient}</li>
+                            ))}
+                          </ul>
+                          <h4>Steps</h4>
+                          <ol>
+                            {recipe.steps.map((step, index) => (
+                              <li key={index}>{step}</li>
+                            ))}
+                          </ol>
+                          <div className="recipe-actions">
+                            <button onClick={() => handleEdit(recipe.id)} className="btn-edit">
+                              Edit
+                            </button>
+                            <button onClick={() => handleDelete(recipe.id)} className="btn-delete">
+                              🗑
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
             </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
-            {expandedRecipe === recipe.id && (
-              <div className="recipe-details">
-                <h4>Ingredients</h4>
-                <ul>
-                  {recipe.ingredients.map((ingredient, index) => (
-                    <li key={index}>{ingredient}</li>
-                  ))}
-                </ul>
-                <h4>Steps</h4>
-                <ol>
-                  {recipe.steps.map((step, index) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ol>
-                <div className="recipe-actions">
-                  <button onClick={() => handleEdit(recipe.id)} className="btn-edit">
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(recipe.id)} className="btn-delete">
-                    🗑
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-        {loading && <p>Loading more recipes...</p>}
-        <div id="sentinel" style={{ height: '1px' }}></div>
-      </div>
+      {loading && <p>Loading more recipes...</p>}
+      <div id="sentinel" style={{ height: '1px' }}></div>
     </div>
   );
 };
