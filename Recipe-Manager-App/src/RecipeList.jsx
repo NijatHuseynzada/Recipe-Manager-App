@@ -1,29 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRecipes, deleteRecipe } from '../api';
+import { fetchRecipesPaginated, deleteRecipe } from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
+  const [allRecipes, setAllRecipes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
   const [sortOption, setSortOption] = useState('');
   const [expandedRecipe, setExpandedRecipe] = useState(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [filterActive, setFilterActive] = useState(false); // NEW: Track active filters
+  const [selectedRecipes, setSelectedRecipes] = useState([]); // NEW: Track selected recipes
+
   const navigate = useNavigate();
 
+  // Fetch recipes based on pagination or filter state
   useEffect(() => {
     const loadRecipes = async () => {
       try {
-        const response = await fetchRecipes();
-        setRecipes(response.data);
+        setLoading(true);
+
+        // Fetch filtered recipes when filters/search are active
+        if (filterActive) {
+          const filteredData = applyFiltersAndSort(allRecipes);
+          setRecipes(filteredData);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch paginated recipes when no filters/search are applied
+        const response = await fetchRecipesPaginated(page, 25);
+        const uniqueRecipes = response.filter(
+          (newRecipe) => !allRecipes.some((recipe) => recipe.id === newRecipe.id)
+        );
+
+        setAllRecipes((prev) => [...prev, ...uniqueRecipes]);
+        if (page === 1) setRecipes(uniqueRecipes);
+        else setRecipes((prev) => [...prev, ...uniqueRecipes]);
+
+        if (uniqueRecipes.length < 25) setHasMore(false);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching recipes:', error);
         alert('Failed to fetch recipes. Please try again.');
+        setLoading(false);
       }
     };
 
     loadRecipes();
-  }, []);
+  }, [page, filterActive]); // Trigger fetch when page changes or filters are applied
+
+  // Apply filters and sorting whenever filters or sorting options change
+  useEffect(() => {
+    if (searchQuery || selectedTag || selectedDifficulty || sortOption) {
+      setFilterActive(true); // Filters are active
+      setRecipes(applyFiltersAndSort(allRecipes));
+    } else {
+      setFilterActive(false); // Reset filters
+      setPage(1); // Reset pagination
+      setRecipes(allRecipes.slice(0, 10)); // Reset to the first page of recipes
+    }
+  }, [searchQuery, selectedTag, selectedDifficulty, sortOption]);
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this recipe?');
@@ -31,7 +72,7 @@ const RecipeList = () => {
 
     try {
       await deleteRecipe(id);
-      setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
+      setAllRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
       alert('Recipe deleted successfully!');
     } catch (error) {
       console.error('Error deleting recipe:', error);
@@ -43,42 +84,101 @@ const RecipeList = () => {
     navigate(`/edit-recipe/${id}`);
   };
 
-  const handleSearch = (recipe) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      recipe.title.toLowerCase().includes(query) ||
-      recipe.description.toLowerCase().includes(query) ||
-      recipe.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
+  const applyFiltersAndSort = (data) => {
+    let filteredRecipes = data;
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) =>
+          recipe.title.toLowerCase().includes(query) ||
+          recipe.description.toLowerCase().includes(query) ||
+          recipe.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
+      );
+    }
+
+    // Apply tag filter
+    if (selectedTag) {
+      filteredRecipes = filteredRecipes.filter((recipe) => recipe.tags?.includes(selectedTag));
+    }
+
+    // Apply difficulty filter
+    if (selectedDifficulty) {
+      filteredRecipes = filteredRecipes.filter((recipe) => recipe.difficulty === selectedDifficulty);
+    }
+
+    // Apply sorting
+    if (sortOption) {
+      filteredRecipes.sort((a, b) => {
+        switch (sortOption) {
+          case 'title':
+            return a.title.localeCompare(b.title);
+          case 'updateTime':
+            return new Date(b.last_updated) - new Date(a.last_updated);
+          case 'difficulty':
+            const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
+            return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+          default:
+            return 0;
+        }
+      });
+    }
+
+    // Remove duplicates by ensuring each recipe has a unique ID
+    const uniqueRecipes = Array.from(new Set(filteredRecipes.map((recipe) => recipe.id))).map((id) =>
+      filteredRecipes.find((recipe) => recipe.id === id)
     );
+
+    return uniqueRecipes;
   };
 
-  const handleFilter = (recipe) => {
-    const tagMatch = selectedTag ? recipe.tags.includes(selectedTag) : true;
-    const difficultyMatch = selectedDifficulty ? recipe.difficulty === selectedDifficulty : true;
-    return tagMatch && difficultyMatch;
-  };
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+  const handleTagChange = (e) => setSelectedTag(e.target.value);
+  const handleDifficultyChange = (e) => setSelectedDifficulty(e.target.value);
+  const handleSortChange = (e) => setSortOption(e.target.value);
 
-  const handleSort = (a, b) => {
-    switch (sortOption) {
-      case 'title':
-        return a.title.localeCompare(b.title);
-      case 'updateTime':
-        return new Date(b.last_updated) - new Date(a.last_updated);
-      case 'difficulty':
-        const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
-        return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
-      default:
-        return 0;
+  const toggleExpanded = (id) => setExpandedRecipe(expandedRecipe === id ? null : id);
+
+  const loadMoreRecipes = () => {
+    if (!loading && hasMore && !filterActive) {
+      setPage((prevPage) => prevPage + 1);
     }
   };
 
-  const filteredAndSortedRecipes = recipes
-    .filter(handleSearch)
-    .filter(handleFilter)
-    .sort(handleSort);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreRecipes();
+        }
+      },
+      { threshold: 1.0 }
+    );
 
-  const toggleExpanded = (id) => {
-    setExpandedRecipe(expandedRecipe === id ? null : id);
+    const sentinel = document.querySelector('#sentinel');
+    if (sentinel) observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleSelectRecipe = (id) => {
+    setSelectedRecipes((prev) =>
+      prev.includes(id) ? prev.filter((recipeId) => recipeId !== id) : [...prev, id]
+    );
+  };
+
+  const handleSendEmail = () => {
+    const selectedRecipeDetails = recipes.filter((recipe) =>
+      selectedRecipes.includes(recipe.id)
+    );
+
+    const emailBody = encodeURIComponent(
+      JSON.stringify(selectedRecipeDetails, null, 2)
+    );
+
+    const mailtoLink = `mailto:?subject=Selected Recipes&body=${emailBody}`;
+    window.location.href = mailtoLink;
   };
 
   return (
@@ -90,25 +190,22 @@ const RecipeList = () => {
         type="text"
         placeholder="Search recipes by title, description, or ingredients"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={handleSearchChange}
         className="search-input"
       />
 
       {/* Filter Options */}
       <div className="filter-options">
-        <select onChange={(e) => setSelectedTag(e.target.value)} value={selectedTag}>
+        <select onChange={handleTagChange} value={selectedTag}>
           <option value="">Filter by Tag</option>
-          {Array.from(new Set(recipes.flatMap((recipe) => recipe.tags))).map((tag, index) => (
+          {Array.from(new Set(allRecipes.flatMap((recipe) => recipe.tags || []))).map((tag, index) => (
             <option key={index} value={tag}>
               {tag}
             </option>
           ))}
         </select>
 
-        <select
-          onChange={(e) => setSelectedDifficulty(e.target.value)}
-          value={selectedDifficulty}
-        >
+        <select onChange={handleDifficultyChange} value={selectedDifficulty}>
           <option value="">Filter by Difficulty</option>
           <option value="Easy">Easy</option>
           <option value="Medium">Medium</option>
@@ -117,16 +214,25 @@ const RecipeList = () => {
       </div>
 
       {/* Sort Options */}
-      <select onChange={(e) => setSortOption(e.target.value)} value={sortOption}>
+      <select onChange={handleSortChange} value={sortOption}>
         <option value="">Sort by</option>
         <option value="title">Title</option>
         <option value="updateTime">Last Updated</option>
         <option value="difficulty">Difficulty</option>
       </select>
 
+      <button onClick={handleSendEmail} className="btn-submit">
+        Send Selected Recipes via Email
+      </button>
+
       <div className="recipe-grid">
-        {filteredAndSortedRecipes.map((recipe) => (
+        {recipes.map((recipe) => (
           <div key={recipe.id} className="recipe-card">
+            <input
+              type="checkbox"
+              checked={selectedRecipes.includes(recipe.id)}
+              onChange={() => handleSelectRecipe(recipe.id)}
+            />
             <img
               src={recipe.image}
               alt={recipe.title}
@@ -134,22 +240,23 @@ const RecipeList = () => {
               onClick={() => toggleExpanded(recipe.id)}
             />
             <div className="recipe-content">
-              <h3 className="recipe-title">{recipe.title}</h3>
-              <p className="recipe-description">{recipe.description}</p>
+              <h3>{recipe.title}</h3>
+              <p>{recipe.description}</p>
 
-              {/* Add Difficulty and Tags */}
               <div className="recipe-meta">
                 <p className="recipe-difficulty">Difficulty: {recipe.difficulty}</p>
                 <div className="recipe-tags">
-                  {recipe.tags.map((tag, index) => (
-                    <span key={index} className="tag">
+                  {recipe.tags.map((tag, tagIndex) => (
+                    <span key={tagIndex} className="tag">
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <p className="recipe-updated">Last updated: {new Date(recipe.last_updated).toLocaleString()}</p>
+              <p className="recipe-updated">
+                Last updated: {new Date(recipe.last_updated).toLocaleString()}
+              </p>
             </div>
 
             {expandedRecipe === recipe.id && (
@@ -178,6 +285,8 @@ const RecipeList = () => {
             )}
           </div>
         ))}
+        {loading && <p>Loading more recipes...</p>}
+        <div id="sentinel" style={{ height: '1px' }}></div>
       </div>
     </div>
   );

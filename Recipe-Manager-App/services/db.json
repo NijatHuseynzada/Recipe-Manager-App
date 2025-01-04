@@ -266,7 +266,7 @@
       "image": "https://tutti-dolci.com/wp-content/uploads/2024/04/Triple-Chocolate-Brownies-3.jpg"
     },
     {
-      "id": "673f",
+      "id": "11",
       "title": "İskender Kebab",
       "description": "A beloved dish from Turkish cuisine, İskender Kebab combines layers of tender meat, buttery tomato sauce, and yogurt, served over pita bread.",
       "ingredients": [
@@ -299,6 +299,284 @@
       "difficulty": "Hard",
       "image": "https://i0.wp.com/iran-cuisine.com/wp-content/uploads/2023/09/iskender-kebap-tarifi.jpg?fit=971%2C707&ssl=1",
       "last_updated": "2025-01-03T19:25:15.477Z"
+    },
+    {
+      "id": "12",
+      "title": "Baklava",
+      "description": "A rich and sweet pastry made with layers of filo dough, nuts, and syrup.",
+      "ingredients": [
+        "Filo Dough",
+        "Pistachios",
+        "Walnuts",
+        "Butter",
+        "Sugar",
+        "Water",
+        "Lemon Juice"
+      ],
+      "steps": [
+        "Layer filo dough with butter and nuts.",
+        "Bake until golden brown.",
+        "Prepare syrup with sugar",
+        "water",
+        "and lemon juice.",
+        "Pour syrup over baked pastry.",
+        "Let it cool and serve."
+      ],
+      "tags": [
+        "Dessert",
+        "Turkish",
+        "Sweet"
+      ],
+      "difficulty": "Medium",
+      "last_updated": "2025-01-04T13:28:21.210Z",
+      "image": "https://www.simplyrecipes.com/thmb/3S8HtOSKvpoQmw4wgo5yCW2qjVE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Baklava-LEAD-11-b2a228e6db9f43d697ae3aed378d0b2a.jpg"
+    },
+    {
+      "id": "13",
+      "title": "Pide",
+      "description": "A Turkish flatbread with various toppings such as cheese, meat, or vegetables.",
+      "ingredients": [
+        "Flour",
+        "Yeast",
+        "Water",
+        "Salt",
+        "Olive Oil",
+        "Ground Beef",
+        "Cheese"
+      ],
+      "steps": [
+        "Prepare dough and let it rise.",
+        "Shape into an oval and add toppings.",
+        "Bake in a hot oven until crust is golden.",
+        "Serve hot with tea."
+      ],
+      "tags": [
+        "Turkish",
+        "Bread",
+        "Lunch"
+      ],
+      "difficulty": "Easy",
+      "last_updated": "2025-01-04T13:28:52.022Z",
+      "image": "https://figandoliveplatter.com/wp-content/uploads/2021/05/IMG_8792.jpg"
+    },
+    {
+      "id": "14",
+      "title": "Dolma",
+      "description": "Grape leaves stuffed with a mixture of rice, spices, and sometimes meat.",
+      "ingredients": [
+        "Grape Leaves",
+        "Rice",
+        "Onion",
+        "Ground Beef or Lamb",
+        "Dill",
+        "Olive Oil"
+      ],
+      "steps": [
+        "Prepare filling with rice",
+        "spices",
+        "and meat.",
+        "Wrap filling in grape leaves.",
+        "Cook in a pot with water and olive oil until tender."
+      ],
+      "tags": [
+        "Azerbaijani",
+        "Turkish",
+        "Healthy"
+      ],
+      "difficulty": "Medium",
+      "last_updated": "2025-01-04T13:29:43.008Z",
+      "image": "https://www.unicornsinthekitchen.com/wp-content/uploads/2019/08/Dolma-feature-image.jpg"
+    },
+    {
+      "id": "15",
+      "title": "Lahmacun",
+      "description": "A thin Turkish flatbread topped with minced meat, vegetables, and spices.",
+      "ingredients": [
+        "Flour",
+        "Yeast",
+        "Water",
+        "Ground Beef",
+        "Tomato Paste",
+        "Garlic",
+        "Spices"
+      ],
+      "steps": [
+        "Prepare dough and roll out thinly.",
+        "Spread topping of minced meat and vegetables.",
+        "Bake in a hot oven for a few minutes.",
+        "Serve with lemon and parsley."
+      ],
+      "tags": [
+        "Turkish",
+        "Dinner",
+        "Quick"
+      ],
+      "difficulty": "Medium",
+      "last_updated": "2025-01-04T13:30:12.156Z",
+      "image": "https://www.andy-cooks.com/cdn/shop/articles/20230925162520-andy-20cooks-20-20lahmacun.jpg?v=1695663292"
+    },
+    {
+      "id": "16",
+      "title": "Kebab Kubideh",
+      "description": "Grilled skewers of seasoned ground meat, a popular dish in Azerbaijan.",
+      "ingredients": [
+        "Ground Beef or Lamb",
+        "Onion",
+        "Salt",
+        "Black Pepper",
+        "Sumac"
+      ],
+      "steps": [
+        "Mix ground meat with onion and spices.",
+        "Shape into long",
+        "flat skewers.",
+        "Grill until cooked through.",
+        "Serve with rice and grilled vegetables."
+      ],
+      "tags": [
+        "Azerbaijani",
+        "Grilled",
+        "Dinner"
+      ],
+      "difficulty": "Easy",
+      "last_updated": "2025-01-04T13:30:44.219Z",
+      "image": "https://urbanfarmandkitchen.com/wp-content/uploads/2024/06/kabob-koobideh-persian-beef-kebabs-2.jpg"
+    },
+    {
+      "id": "17",
+      "title": "Ash Plov",
+      "description": "A traditional Azerbaijani rice dish cooked with dried fruits and meat.",
+      "ingredients": [
+        "Rice",
+        "Lamb",
+        "Apricots",
+        "Raisins",
+        "Carrots",
+        "Butter"
+      ],
+      "steps": [
+        "Cook rice until fluffy.",
+        "Sauté lamb and vegetables with dried fruits.",
+        "Layer rice and lamb mixture",
+        "cook until flavors blend."
+      ],
+      "tags": [
+        "Azerbaijani",
+        "Rice",
+        "Dinner"
+      ],
+      "difficulty": "Hard",
+      "last_updated": "2025-01-04T13:33:49.946Z",
+      "image": "https://cdn4.premiumread.com/?url=https://www.omanobserver.om/omanobserver/uploads/images/2021/05/02/1632226.jpg&w=840&q=90&f=jpg"
+    },
+    {
+      "id": "18",
+      "title": "Künefe",
+      "description": "A sweet Turkish dessert made with shredded filo dough, cheese, and syrup.",
+      "ingredients": [
+        "Kadayif Dough",
+        "Butter",
+        "Cheese",
+        "Sugar",
+        "Water",
+        "Lemon Juice"
+      ],
+      "steps": [
+        "Layer shredded filo dough with cheese and butter.",
+        "Bake until golden and crispy.",
+        "Pour syrup over hot dessert and serve warm."
+      ],
+      "tags": [
+        "Dessert",
+        "Turkish",
+        "Sweet"
+      ],
+      "difficulty": "Medium",
+      "last_updated": "2025-01-04T13:32:09.914Z",
+      "image": "https://assets.tmecosys.cn/image/upload/t_web767x639/img/recipe/ras/Assets/04ec6dd767bbb83a5b97f7c994a72239/Derivates/009a0e4c88ac4a1fcffe05de641b72edaef56637.jpg"
+    },
+    {
+      "id": "19",
+      "title": "Shashlik",
+      "description": "Marinated meat skewers grilled over an open flame, a favorite in Azerbaijan.",
+      "ingredients": [
+        "Lamb or Beef",
+        "Onions",
+        "Garlic",
+        "Vinegar",
+        "Salt",
+        "Pepper"
+      ],
+      "steps": [
+        "Marinate meat with onion",
+        "garlic",
+        "and vinegar.",
+        "Skewer meat and grill over hot coals.",
+        "Serve with lavash bread and pickled vegetables."
+      ],
+      "tags": [
+        "Azerbaijani",
+        "Grilled",
+        "Dinner"
+      ],
+      "difficulty": "Easy",
+      "last_updated": "2025-01-04T13:32:33.714Z",
+      "image": "https://www.krumpli.co.uk/wp-content/uploads/2022/11/Chicken-Shashlik-Kebab-04-735x735.jpg"
+    },
+    {
+      "id": "20",
+      "title": "Bozbash",
+      "description": "A hearty Azerbaijani soup made with lamb, potatoes, and chickpeas.",
+      "ingredients": [
+        "Lamb",
+        "Potatoes",
+        "Chickpeas",
+        "Onion",
+        "Turmeric",
+        "Salt"
+      ],
+      "steps": [
+        "Cook lamb until tender.",
+        "Add chickpeas",
+        "potatoes",
+        "and turmeric.",
+        "Simmer until flavors blend and serve hot."
+      ],
+      "tags": [
+        "Azerbaijani",
+        "Soup",
+        "Hearty"
+      ],
+      "difficulty": "Medium",
+      "last_updated": "2025-01-04T13:33:02.413Z",
+      "image": "https://cbx-prod.b-cdn.net/COLOURBOX48617095.jpg?width=800&height=800&quality=70"
+    },
+    {
+      "id": "21",
+      "title": "Mantı",
+      "description": "Small Turkish dumplings filled with meat and served with yogurt and garlic sauce.",
+      "ingredients": [
+        "Flour",
+        "Eggs",
+        "Water",
+        "Ground Beef",
+        "Onion",
+        "Garlic",
+        "Yogurt"
+      ],
+      "steps": [
+        "Prepare dough and roll out thinly.",
+        "Fill with minced meat and fold into small dumplings.",
+        "Boil dumplings and serve with yogurt and garlic sauce."
+      ],
+      "tags": [
+        "Turkish",
+        "Dumplings",
+        "Dinner"
+      ],
+      "difficulty": "Hard",
+      "last_updated": "2025-01-04T13:31:26.184Z",
+      "image": "https://www.shopsa.com.tr/upload/news/960x600/mant.jpg"
     }
   ]
 }

@@ -11,18 +11,31 @@ const App = () => {
       <header className="navbar">
         <div className="navbar-brand">Recipe Manager</div>
         <nav className="navbar-links">
-          <NavLink to="/" className="nav-link" activeClassName="active-link">
-            Home
-          </NavLink>
-          <NavLink to="/recipes" className="nav-link" activeClassName="active-link">
-            Recipes
-          </NavLink>
-          <NavLink to="/add-recipe" className="nav-link" activeClassName="active-link">
-            Add Recipe
-          </NavLink>
-          <NavLink to="/contact" className="nav-link" activeClassName="active-link">
-            Contact
-          </NavLink>
+        <NavLink
+  to="/"
+  className={({ isActive }) => (isActive ? "active-link" : "nav-link")}
+>
+  Home
+</NavLink>
+<NavLink
+  to="/recipes"
+  className={({ isActive }) => (isActive ? "active-link" : "nav-link")}
+>
+  Recipes
+</NavLink>
+<NavLink
+  to="/add-recipe"
+  className={({ isActive }) => (isActive ? "active-link" : "nav-link")}
+>
+  Add Recipe
+</NavLink>
+<NavLink
+  to="/contact"
+  className={({ isActive }) => (isActive ? "active-link" : "nav-link")}
+>
+  Contact
+</NavLink>
+
         </nav>
       </header>
       <Routes>
