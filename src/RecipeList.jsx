@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { fetchRecipesPaginated, deleteRecipe, updateRecipesOrder } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { throttle } from 'lodash';
+
+
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
@@ -24,7 +27,7 @@ const RecipeList = () => {
       try {
         setLoading(true);
 
-        const response = await fetchRecipesPaginated(page, 25);
+        const response = await fetchRecipesPaginated(page, 20);
         const recipeMap = new Map();
 
         // Merge current and new recipes, ensuring unique IDs
@@ -42,7 +45,7 @@ const RecipeList = () => {
           setRecipes((prev) => [...prev, ...deduplicatedRecipes.slice(prev.length)]);
         }
 
-        if (response.length < 25) setHasMore(false);
+        if (response.length < 20) setHasMore(false);
       } catch (error) {
         console.error('Error fetching recipes:', error);
         alert('Failed to fetch recipes. Please try again.');
@@ -165,6 +168,81 @@ const RecipeList = () => {
       alert('Failed to update order. Please try again.');
     }
   };
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+        console.log(
+            'Scroll Position:',
+            window.innerHeight + document.documentElement.scrollTop,
+            'Offset Height:',
+            document.documentElement.offsetHeight
+        );
+
+        if (
+            window.innerHeight + document.documentElement.scrollTop >=
+                document.documentElement.offsetHeight &&
+            hasMore &&
+            !loading
+        ) {
+            console.log('Loading more recipes...');
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, 200);
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+        handleScroll.cancel();
+    };
+}, [hasMore, loading]);
+
+
+const resetAndApplyFilters = () => {
+  setPage(1); // Reset to the first page
+  setHasMore(true); // Allow loading of subsequent pages
+  setRecipes(applyFiltersAndSort(allRecipes));
+};
+
+useEffect(() => {
+  if (searchQuery || selectedTag || selectedDifficulty || sortOption) {
+      resetAndApplyFilters();
+  }
+}, [searchQuery, selectedTag, selectedDifficulty, sortOption]);
+
+
+const mergeRecipes = (newRecipes) => {
+  const recipeMap = new Map();
+  [...allRecipes, ...newRecipes].forEach((recipe) => recipeMap.set(recipe.id, recipe));
+  return Array.from(recipeMap.values());
+};
+
+useEffect(() => {
+  if (page > 1) {
+      const fetchMoreRecipes = async () => {
+          try {
+              setLoading(true);
+              console.log('Fetching page:', page);
+              const newRecipes = await fetchRecipesPaginated(page, 20, sortOption);
+              setAllRecipes((prevRecipes) => mergeRecipes(newRecipes));
+              setRecipes((prevRecipes) => [...prevRecipes, ...newRecipes]);
+
+              if (newRecipes.length < 1) {
+                  console.log('No more recipes to fetch.');
+                  setHasMore(false);
+              }
+          } catch (error) {
+              console.error('Error fetching more recipes:', error);
+          } finally {
+              setLoading(false);
+          }
+      };
+
+      fetchMoreRecipes();
+  }
+}, [page]);
+
+
+
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleTagChange = (e) => setSelectedTag(e.target.value);
@@ -199,6 +277,26 @@ const RecipeList = () => {
     setSortOption('');
     setRecipes(allRecipes); // Reset to all recipes
   };
+  useEffect(() => {
+    const throttledScrollHandler = throttle(() => {
+        if (
+            window.innerHeight + document.documentElement.scrollTop >=
+                document.documentElement.offsetHeight &&
+            hasMore &&
+            !loading
+        ) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, 200); // 200ms throttle interval
+
+    window.addEventListener('scroll', throttledScrollHandler);
+
+    return () => {
+        window.removeEventListener('scroll', throttledScrollHandler);
+        throttledScrollHandler.cancel(); // Cancel throttle when the component unmounts
+    };
+}, [hasMore, loading]);
+
 
   return (
     <div className="container">

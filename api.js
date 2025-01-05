@@ -15,20 +15,18 @@ export const deleteRecipe = (id) => axios.delete(`${API_URL}/recipes/${id}`);
 
 export const sendMessage = (message) => axios.post(`${API_URL}/messages`, message);
 
-export const fetchRecipesPaginated = async (page, limit) => {
+export const fetchRecipesPaginated = async (page, limit, sortOption) => {
   try {
-    const response = await axios.get(`${API_URL}/recipes`, {
-      params: {
-        _sort: 'order',
-        _order: 'asc',
-        _page: page,
-        _limit: limit,
-      },
-    });
-    return response.data;
+      const params = {
+          _page: page,
+          _limit: limit,
+          ...(sortOption && { _sort: sortOption, _order: 'asc' }), // Include sorting if selected
+      };
+      const response = await axios.get(`${API_URL}/recipes`, { params });
+      return response.data;
   } catch (error) {
-    console.error('Error fetching paginated recipes:', error);
-    throw error;
+      console.error('Error fetching paginated recipes:', error);
+      throw error;
   }
 };
 
