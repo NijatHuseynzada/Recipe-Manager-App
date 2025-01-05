@@ -128,7 +128,7 @@ const RecipeForm = () => {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="image">Image URL</label>
+          <label htmlFor="image">Image URL (In future, we will implement adding image from your own device)</label>
           <input
             type="text"
             id="image"

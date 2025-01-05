@@ -14,73 +14,78 @@ const RecipeList = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [filterActive, setFilterActive] = useState(false); 
-  const [selectedRecipes, setSelectedRecipes] = useState([]); 
+  const [filterActive, setFilterActive] = useState(false);
+  const [selectedRecipes, setSelectedRecipes] = useState([]);
 
   const navigate = useNavigate();
 
- 
   useEffect(() => {
     const loadRecipes = async () => {
       try {
         setLoading(true);
 
-        if (filterActive) {
-          const filteredData = applyFiltersAndSort(allRecipes);
-          setRecipes(filteredData);
-          setLoading(false);
-          return;
+        const response = await fetchRecipesPaginated(page, 25);
+        const recipeMap = new Map();
+
+        // Merge current and new recipes, ensuring unique IDs
+        [...allRecipes, ...response].forEach((recipe) => {
+          recipeMap.set(recipe.id, recipe);
+        });
+
+        const deduplicatedRecipes = Array.from(recipeMap.values());
+
+        if (page === 1) {
+          setAllRecipes(deduplicatedRecipes);
+          setRecipes(deduplicatedRecipes);
+        } else {
+          setAllRecipes(deduplicatedRecipes);
+          setRecipes((prev) => [...prev, ...deduplicatedRecipes.slice(prev.length)]);
         }
 
-        const response = await fetchRecipesPaginated(page, 25);
-        const uniqueRecipes = response.filter(
-          (newRecipe) => !allRecipes.some((recipe) => recipe.id === newRecipe.id)
-        );
-
-        setAllRecipes((prev) => [...prev, ...uniqueRecipes]);
-        if (page === 1) setRecipes(uniqueRecipes);
-        else setRecipes((prev) => [...prev, ...uniqueRecipes]);
-
-        if (uniqueRecipes.length < 25) setHasMore(false);
-        setLoading(false);
+        if (response.length < 25) setHasMore(false);
       } catch (error) {
         console.error('Error fetching recipes:', error);
         alert('Failed to fetch recipes. Please try again.');
+      } finally {
         setLoading(false);
       }
     };
 
+    if (page === 1) {
+      // Reset state for new fetch
+      setAllRecipes([]);
+      setRecipes([]);
+    }
+
     loadRecipes();
-  }, [page, filterActive]); 
+  }, [page]);
 
   useEffect(() => {
     if (searchQuery || selectedTag || selectedDifficulty || sortOption) {
-      setFilterActive(true); 
+      setFilterActive(true);
       setRecipes(applyFiltersAndSort(allRecipes));
     } else {
-      setFilterActive(false); 
-      setPage(1); 
-      setRecipes(allRecipes.slice(0, 10)); 
+      setFilterActive(false);
+      setRecipes(allRecipes); // Reset to all recipes when no filters are applied
     }
   }, [searchQuery, selectedTag, selectedDifficulty, sortOption]);
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this recipe?');
     if (!confirmDelete) return;
-  
+
     try {
       await deleteRecipe(id);
-  
+
       setAllRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
       setRecipes((prevRecipes) => prevRecipes.filter((recipe) => recipe.id !== id));
-      
+
       alert('Recipe deleted successfully!');
     } catch (error) {
       console.error('Error deleting recipe:', error);
       alert('Failed to delete the recipe. Please try again.');
     }
   };
-  
 
   const handleEdit = (id) => {
     navigate(`/edit-recipe/${id}`);
@@ -95,18 +100,23 @@ const RecipeList = () => {
         (recipe) =>
           recipe.title.toLowerCase().includes(query) ||
           recipe.description.toLowerCase().includes(query) ||
-          recipe.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
+          recipe.ingredients.some((ingredient) =>
+            ingredient.toLowerCase().includes(query)
+          )
       );
     }
 
     if (selectedTag) {
-      filteredRecipes = filteredRecipes.filter((recipe) => recipe.tags?.includes(selectedTag));
+      filteredRecipes = filteredRecipes.filter((recipe) =>
+        recipe.tags?.includes(selectedTag)
+      );
     }
 
     if (selectedDifficulty) {
-      filteredRecipes = filteredRecipes.filter((recipe) => recipe.difficulty === selectedDifficulty);
+      filteredRecipes = filteredRecipes.filter(
+        (recipe) => recipe.difficulty === selectedDifficulty
+      );
     }
-
 
     if (sortOption) {
       filteredRecipes.sort((a, b) => {
@@ -124,7 +134,6 @@ const RecipeList = () => {
       });
     }
 
-    // Remove duplicates by ensuring each recipe has a unique ID
     const uniqueRecipes = Array.from(new Set(filteredRecipes.map((recipe) => recipe.id))).map((id) =>
       filteredRecipes.find((recipe) => recipe.id === id)
     );
@@ -133,34 +142,28 @@ const RecipeList = () => {
   };
 
   const handleDragEnd = async (result) => {
-  if (!result.destination) return;
+    if (!result.destination) return;
 
-  // Reorder the recipes locally
-  const reorderedRecipes = Array.from(recipes);
-  const [removed] = reorderedRecipes.splice(result.source.index, 1);
-  reorderedRecipes.splice(result.destination.index, 0, removed);
+    const reorderedRecipes = Array.from(recipes);
+    const [removed] = reorderedRecipes.splice(result.source.index, 1);
+    reorderedRecipes.splice(result.destination.index, 0, removed);
 
-  // Update the order field
-  const updatedRecipes = reorderedRecipes.map((recipe, index) => ({
-    ...recipe,
-    order: index,
-  }));
+    const updatedRecipes = reorderedRecipes.map((recipe, index) => ({
+      ...recipe,
+      order: index,
+    }));
 
-  setRecipes(updatedRecipes); // Update local state immediately
+    setRecipes(updatedRecipes);
 
-  // Persist the updated order to the backend
-  try {
-    await updateRecipesOrder(updatedRecipes); // API call to persist order
-    setAllRecipes(updatedRecipes); // Update the full recipe list
-    alert('Order updated successfully!');
-  } catch (error) {
-    console.error('Failed to update order:', error);
-    alert('Failed to update order. Please try again.');
-  }
-};
-
-  
-  
+    try {
+      await updateRecipesOrder(updatedRecipes);
+      setAllRecipes(updatedRecipes);
+      alert('Order updated successfully!');
+    } catch (error) {
+      console.error('Failed to update order:', error);
+      alert('Failed to update order. Please try again.');
+    }
+  };
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
   const handleTagChange = (e) => setSelectedTag(e.target.value);
@@ -168,28 +171,6 @@ const RecipeList = () => {
   const handleSortChange = (e) => setSortOption(e.target.value);
 
   const toggleExpanded = (id) => setExpandedRecipe(expandedRecipe === id ? null : id);
-
-  const loadMoreRecipes = () => {
-    if (!loading && hasMore && !filterActive) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreRecipes();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    const sentinel = document.querySelector('#sentinel');
-    if (sentinel) observer.observe(sentinel);
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleSelectRecipe = (id) => {
     setSelectedRecipes((prev) =>
@@ -208,6 +189,14 @@ const RecipeList = () => {
 
     const mailtoLink = `mailto:?subject=Selected Recipes&body=${emailBody}`;
     window.location.href = mailtoLink;
+  };
+
+  const resetFiltersAndSort = () => {
+    setSearchQuery('');
+    setSelectedTag('');
+    setSelectedDifficulty('');
+    setSortOption('');
+    setRecipes(allRecipes); // Reset to all recipes
   };
 
   return (
@@ -240,15 +229,20 @@ const RecipeList = () => {
           <option value="Medium">Medium</option>
           <option value="Hard">Hard</option>
         </select>
-      </div>
 
-      {/* Sort Options */}
-      <select onChange={handleSortChange} value={sortOption}>
-        <option value="">Sort by</option>
-        <option value="title">Title</option>
-        <option value="updateTime">Last Updated</option>
-        <option value="difficulty">Difficulty</option>
-      </select>
+        {/* Sort Options */}
+        <select onChange={handleSortChange} value={sortOption}>
+          <option value="">Sort by</option>
+          <option value="title">Title</option>
+          <option value="updateTime">Last Updated</option>
+          <option value="difficulty">Difficulty</option>
+        </select>
+
+      {/* Reset Button */}
+      <button onClick={resetFiltersAndSort} className="filter-options">
+        Reset Filters and Sort
+      </button>
+      </div>
 
       <button onClick={handleSendEmail} className="btn-submit">
         Send Selected Recipes via Email
@@ -335,9 +329,6 @@ const RecipeList = () => {
           )}
         </Droppable>
       </DragDropContext>
-
-      {loading && <p>Loading more recipes...</p>}
-      <div id="sentinel" style={{ height: '1px' }}></div>
     </div>
   );
 };

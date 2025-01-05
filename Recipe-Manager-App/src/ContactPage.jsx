@@ -1,15 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sendMessage } from '../api';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3000';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ subject: '', email: '', content: '' });
+  const [messages, setMessages] = useState([]);
+  const [filteredMessages, setFilteredMessages] = useState([]); 
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/messages`);
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+        alert('Failed to load sent messages.');
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
+    if (form.email) {
+      const senderMessages = messages.filter(
+        (message) => message.email === form.email
+      );
+      setFilteredMessages(senderMessages);
+    } else {
+      setFilteredMessages([]);
+    }
+  }, [form.email, messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await sendMessage(form);
+      const response = await sendMessage(form);
       alert('Message sent successfully!');
-      setForm({ subject: '', email: '', content: '' }); // Clear form after successful submission
+      setForm({ subject: '', email: '', content: '' }); 
+
+      setMessages((prevMessages) => [...prevMessages, response.data]);
     } catch (error) {
       console.error('Error sending message:', error);
       alert('Failed to send the message. Please try again.');
@@ -57,6 +89,21 @@ const ContactPage = () => {
 
         <button type="submit" className="btn-submit">Send Message</button>
       </form>
+
+      <h2 className="sent-messages-title">Your Sent Messages <br></br><h6> For seeing previous messages, please write your email</h6></h2>
+      <div className="sent-messages-thumbnails">
+        {filteredMessages.length === 0 ? (
+          <p>No messages sent yet.</p>
+        ) : (
+          filteredMessages.map((message) => (
+            <div key={message.id} className="message-thumbnail">
+              <h3>{message.subject}</h3>
+              <p><strong>Email:</strong> {message.email}</p>
+              <p><strong>Content:</strong> {message.content}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
