@@ -93,7 +93,7 @@ const RecipeList = () => {
 
   const applyFiltersAndSort = (data) => {
     let filteredRecipes = data;
-
+  
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filteredRecipes = filteredRecipes.filter(
@@ -102,22 +102,23 @@ const RecipeList = () => {
           recipe.description.toLowerCase().includes(query) ||
           recipe.ingredients.some((ingredient) =>
             ingredient.toLowerCase().includes(query)
-          )
+          ) ||
+          (recipe.tags && recipe.tags.some((tag) => tag.toLowerCase().includes(query))) // Search tags
       );
     }
-
+  
     if (selectedTag) {
       filteredRecipes = filteredRecipes.filter((recipe) =>
         recipe.tags?.includes(selectedTag)
       );
     }
-
+  
     if (selectedDifficulty) {
       filteredRecipes = filteredRecipes.filter(
         (recipe) => recipe.difficulty === selectedDifficulty
       );
     }
-
+  
     if (sortOption) {
       filteredRecipes.sort((a, b) => {
         switch (sortOption) {
@@ -133,13 +134,13 @@ const RecipeList = () => {
         }
       });
     }
-
+  
     const uniqueRecipes = Array.from(new Set(filteredRecipes.map((recipe) => recipe.id))).map((id) =>
       filteredRecipes.find((recipe) => recipe.id === id)
     );
-
+  
     return uniqueRecipes;
-  };
+  };  
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
@@ -248,24 +249,41 @@ const RecipeList = () => {
         Send Selected Recipes via Email
       </button>
 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="recipeList">
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="recipe-grid"
-            >
-              {recipes.map((recipe, index) => (
-                <Draggable key={recipe.id} draggableId={String(recipe.id)} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="recipe-card"
-                    >
-                      <input
+      <DragDropContext
+  onDragEnd={(result) => {
+    if (!result.destination) return;
+
+    const reorderedRecipes = Array.from(recipes);
+    const [removed] = reorderedRecipes.splice(result.source.index, 1);
+    reorderedRecipes.splice(result.destination.index, 0, removed);
+
+    setRecipes(reorderedRecipes);
+
+    // Optionally persist changes to the backend
+    try {
+      updateRecipesOrder(reorderedRecipes.map((recipe, index) => ({ ...recipe, order: index })));
+    } catch (error) {
+      console.error('Failed to update order:', error);
+    }
+  }}
+>
+  <Droppable droppableId="recipeList" direction="horizontal">
+    {(provided) => (
+      <div
+        {...provided.droppableProps}
+        ref={provided.innerRef}
+        className="recipe-grid"
+      >
+        {recipes.map((recipe, index) => (
+          <Draggable key={recipe.id} draggableId={String(recipe.id)} index={index}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className="recipe-card"
+              >
+               <input
                         type="checkbox"
                         checked={selectedRecipes.includes(recipe.id)}
                         onChange={() => handleSelectRecipe(recipe.id)}
@@ -328,7 +346,9 @@ const RecipeList = () => {
             </div>
           )}
         </Droppable>
-      </DragDropContext>
+
+</DragDropContext>
+
     </div>
   );
 };

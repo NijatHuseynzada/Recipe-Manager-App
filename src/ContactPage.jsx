@@ -90,7 +90,7 @@ const ContactPage = () => {
         <button type="submit" className="btn-submit">Send Message</button>
       </form>
 
-      <h2 className="sent-messages-title">Your Sent Messages <br></br><h6> For seeing previous messages, please write your email</h6></h2>
+      <h2 className="sent-messages-title">Your Sent Messages <br></br><h6> For seeing previous messages, please write your email!</h6></h2>
       <div className="sent-messages-thumbnails">
         {filteredMessages.length === 0 ? (
           <p>No messages sent yet.</p>
