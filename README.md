@@ -29,7 +29,7 @@ npm install
 ### Setup JSON-Server
 2. Start JSON-Server:
 ```bash
-npx json-server --watch db.json --port 3000
+json-server --watch db.json --port 3000
 ```
 This will run the JSON-Server on `http://localhost:3000`.
 
