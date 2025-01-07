@@ -4,7 +4,6 @@ const API_URL = 'http://localhost:3000';
 
 export const fetchRecipes = () => axios.get(`${API_URL}/recipes`);
 
-
 export const fetchRecipeById = (id) => axios.get(`${API_URL}/recipes/${id}`);
 
 export const createRecipe = (data) => axios.post(`${API_URL}/recipes`, data);
@@ -17,16 +16,18 @@ export const sendMessage = (message) => axios.post(`${API_URL}/messages`, messag
 
 export const fetchRecipesPaginated = async (page, limit, sortOption) => {
   try {
-      const params = {
-          _page: page,
-          _limit: limit,
-          ...(sortOption && { _sort: sortOption, _order: 'asc' }), // Include sorting if selected
-      };
-      const response = await axios.get(`${API_URL}/recipes`, { params });
-      return response.data;
+    const params = {
+      _page: page,
+      _limit: limit,
+      _sort: 'order', // Always sort by 'order'
+      _order: 'asc',
+      ...(sortOption && { _sort: sortOption, _order: 'asc' }), // Additional sorting if needed
+    };
+    const response = await axios.get(`${API_URL}/recipes`, { params });
+    return response.data;
   } catch (error) {
-      console.error('Error fetching paginated recipes:', error);
-      throw error;
+    console.error('Error fetching paginated recipes:', error);
+    throw error;
   }
 };
 
@@ -39,7 +40,7 @@ export const updateRecipesOrder = async (recipes) => {
     await Promise.all(updatePromises);
     return { success: true };
   } catch (error) {
-    console.error('ailed to update recipe order:', error.response || error);
+    console.error('Failed to update recipe order:', error.response || error);
     throw error;
   }
 };

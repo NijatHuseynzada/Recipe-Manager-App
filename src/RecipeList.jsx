@@ -27,7 +27,7 @@ const RecipeList = () => {
       try {
         setLoading(true);
 
-        const response = await fetchRecipesPaginated(page, 20);
+        const response = await fetchRecipesPaginated(page, 100);
         const recipeMap = new Map();
 
         // Merge current and new recipes, ensuring unique IDs
@@ -147,27 +147,31 @@ const RecipeList = () => {
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
-
+  
+    // Rearrange local recipes array
     const reorderedRecipes = Array.from(recipes);
-    const [removed] = reorderedRecipes.splice(result.source.index, 1);
-    reorderedRecipes.splice(result.destination.index, 0, removed);
-
+    const [movedItem] = reorderedRecipes.splice(result.source.index, 1);
+    reorderedRecipes.splice(result.destination.index, 0, movedItem);
+  
+    // Update the order field in each recipe
     const updatedRecipes = reorderedRecipes.map((recipe, index) => ({
       ...recipe,
       order: index,
     }));
-
+  
     setRecipes(updatedRecipes);
-
+  
+    // Persist updated order to the backend
     try {
       await updateRecipesOrder(updatedRecipes);
-      setAllRecipes(updatedRecipes);
-      alert('Order updated successfully!');
+      console.log('Order updated on the server.');
     } catch (error) {
       console.error('Failed to update order:', error);
       alert('Failed to update order. Please try again.');
     }
   };
+  
+  
   useEffect(() => {
     const handleScroll = throttle(() => {
         console.log(
@@ -347,24 +351,7 @@ useEffect(() => {
         Send Selected Recipes via Email
       </button>
 
-      <DragDropContext
-  onDragEnd={(result) => {
-    if (!result.destination) return;
-
-    const reorderedRecipes = Array.from(recipes);
-    const [removed] = reorderedRecipes.splice(result.source.index, 1);
-    reorderedRecipes.splice(result.destination.index, 0, removed);
-
-    setRecipes(reorderedRecipes);
-
-    // Optionally persist changes to the backend
-    try {
-      updateRecipesOrder(reorderedRecipes.map((recipe, index) => ({ ...recipe, order: index })));
-    } catch (error) {
-      console.error('Failed to update order:', error);
-    }
-  }}
->
+      <DragDropContext onDragEnd={handleDragEnd}>
   <Droppable droppableId="recipeList" direction="horizontal">
     {(provided) => (
       <div
@@ -381,71 +368,68 @@ useEffect(() => {
                 {...provided.dragHandleProps}
                 className="recipe-card"
               >
-               <input
-                        type="checkbox"
-                        checked={selectedRecipes.includes(recipe.id)}
-                        onChange={() => handleSelectRecipe(recipe.id)}
-                      />
-                      <img
-                        src={recipe.image}
-                        alt={recipe.title}
-                        className="recipe-image"
-                        onClick={() => toggleExpanded(recipe.id)}
-                      />
-                      <div className="recipe-content">
-                        <h3>{recipe.title}</h3>
-                        <p>{recipe.description}</p>
-
-                        <div className="recipe-meta">
-                          <p className="recipe-difficulty">Difficulty: {recipe.difficulty}</p>
-                          <div className="recipe-tags">
-                            {recipe.tags.map((tag, tagIndex) => (
-                              <span key={tagIndex} className="tag">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <p className="recipe-updated">
-                          Last updated: {new Date(recipe.last_updated).toLocaleString()}
-                        </p>
-                      </div>
-
-                      {expandedRecipe === recipe.id && (
-                        <div className="recipe-details">
-                          <h4>Ingredients</h4>
-                          <ul>
-                            {recipe.ingredients.map((ingredient, index) => (
-                              <li key={index}>{ingredient}</li>
-                            ))}
-                          </ul>
-                          <h4>Steps</h4>
-                          <ol>
-                            {recipe.steps.map((step, index) => (
-                              <li key={index}>{step}</li>
-                            ))}
-                          </ol>
-                          <div className="recipe-actions">
-                            <button onClick={() => handleEdit(recipe.id)} className="btn-edit">
-                              Edit
-                            </button>
-                            <button onClick={() => handleDelete(recipe.id)} className="btn-delete">
-                              🗑
-                            </button>
-                          </div>
-                        </div>
-                      )}
+                <input
+                  type="checkbox"
+                  checked={selectedRecipes.includes(recipe.id)}
+                  onChange={() => handleSelectRecipe(recipe.id)}
+                />
+                <img
+                  src={recipe.image}
+                  alt={recipe.title}
+                  className="recipe-image"
+                  onClick={() => toggleExpanded(recipe.id)}
+                />
+                <div className="recipe-content">
+                  <h3>{recipe.title}</h3>
+                  <p>{recipe.description}</p>
+                  <div className="recipe-meta">
+                    <p className="recipe-difficulty">Difficulty: {recipe.difficulty}</p>
+                    <div className="recipe-tags">
+                      {recipe.tags.map((tag, tagIndex) => (
+                        <span key={tagIndex} className="tag">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-
+                  </div>
+                  <p className="recipe-updated">
+                    Last updated: {new Date(recipe.last_updated).toLocaleString()}
+                  </p>
+                </div>
+                {expandedRecipe === recipe.id && (
+                  <div className="recipe-details">
+                    <h4>Ingredients</h4>
+                    <ul>
+                      {recipe.ingredients.map((ingredient, index) => (
+                        <li key={index}>{ingredient}</li>
+                      ))}
+                    </ul>
+                    <h4>Steps</h4>
+                    <ol>
+                      {recipe.steps.map((step, index) => (
+                        <li key={index}>{step}</li>
+                      ))}
+                    </ol>
+                    <div className="recipe-actions">
+                      <button onClick={() => handleEdit(recipe.id)} className="btn-edit">
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(recipe.id)} className="btn-delete">
+                        🗑
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </Draggable>
+        ))}
+        {provided.placeholder}
+      </div>
+    )}
+  </Droppable>
 </DragDropContext>
+
 
     </div>
   );
