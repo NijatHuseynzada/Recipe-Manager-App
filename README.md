@@ -17,7 +17,7 @@ The Recipe Manager App is a web-based platform for managing, exploring, and shar
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/recipe-manager.git
+git clone https://github.com/NijatHuseynzada/Recipe-Manager-App.git
 cd Recipe-Manager-App
 ```
 
